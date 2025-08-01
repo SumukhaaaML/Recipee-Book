@@ -1,0 +1,92 @@
+<div class="min-h-screen bg-gray-100">
+  <nav
+    class="bg-blue-600 text-white px-6 py-4 flex justify-between items-center"
+  >
+    <a href="/admin/dashboard" class="text-2xl font-bold hover:underline">
+      TaskManagePortal
+    </a>
+    <div class="flex space-x-4">
+      <!-- Filter Dropdown -->
+      <select
+        [(ngModel)]="filterStatus"
+        class="bg-blue-700 text-white px-3 py-2 rounded shadow-sm hover:bg-blue-800 focus:ring-1 focus:outline-none focus:ring-blue-300 font-medium text-sm inline-flex items-center"
+      >
+        <option value="All">All</option>
+        <option value="Pending">Pending</option>
+        <option value="InProgress">In Progress</option>
+        <option value="Completed">Completed</option>
+      </select>
+
+      <button
+        class="bg-blue-500 px-4 py-2 rounded hover:bg-blue-700 transition"
+        (click)="goToManageUsers()"
+      >
+        Manage Users
+      </button>
+
+      <button
+        class="bg-green-500 px-4 py-2 rounded hover:bg-green-600 transition"
+        (click)="goToAddTask()"
+      >
+        Add Task
+      </button>
+
+      <button
+        class="bg-red-500 px-4 py-2 rounded hover:bg-red-600 transition"
+        (click)="logout()"
+      >
+        Logout
+      </button>
+    </div>
+  </nav>
+
+  <div class="px-6 py-4">
+    <table
+      class="min-w-full bg-white border border-gray-300 shadow-sm rounded-lg"
+    >
+      <thead class="bg-gray-200">
+        <tr>
+          <th class="py-2 px-4 border-b text-left">Sr. No.</th>
+          <th class="py-2 px-4 border-b text-left">Title</th>
+          <th class="py-2 px-4 border-b text-left">Project</th>
+          <th class="py-2 px-4 border-b text-left">Assigned</th>
+          <th class="py-2 px-4 border-b text-left">Status</th>
+          <th class="py-2 px-4 border-b text-left">Deadline</th>
+          <th class="py-2 px-4 border-b text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let task of tasks | taskFilter : filterStatus; let i = index"
+          (click)="viewTaskDetails(task)"
+          class="hover:bg-gray-100 cursor-pointer"
+        >
+          <td class="py-2 px-4 border-b">{{ i + 1 }}</td>
+          <td class="py-2 px-4 border-b">{{ task.title }}</td>
+          <td class="py-2 px-4 border-b">{{ task.project }}</td>
+          <td class="py-2 px-4 border-b">{{ task.assignedTo }}</td>
+          <td class="py-2 px-4 border-b">
+            {{ task.status }}
+          </td>
+          <td class="py-2 px-4 border-b">{{ task.deadline }}</td>
+          <td class="py-2 px-4 border-b text-center">
+            <button
+              class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+              (click)="openDeleteDialog(task.id, $event)"
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Delete Dialog Modal -->
+<app-delete-dialog
+  *ngIf="isDeleteDialogOpen"
+  [taskId]="selectedTaskId!"
+  (confirm)="deleteTaskFromModal($event)"
+  (cancel)="closeDeleteDialog()"
+></app-delete-dialog>
